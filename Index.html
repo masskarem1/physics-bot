@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نيوتن - مساعد الفيزياء MUST</title>
+    <style>
+        /* تعريف متغيرات الألوان (هوية جامعة MUST) */
+        :root {
+            --bg-color: #f4f7f6;
+            --chat-container-bg: #ffffff;
+            --chat-box-bg: #fafafa;
+            --text-color: #333333;
+            --header-color: #003366; /* أزرق MUST الداكن */
+            --bot-msg-bg: #e9ecef;
+            --bot-msg-text: #333333;
+            --user-msg-bg: #003366; /* أزرق MUST للرسائل */
+            --user-msg-text: #ffffff;
+            --btn-bg: #FFC72C; /* ذهبي MUST */
+            --btn-text: #003366;
+            --btn-hover: #e6b422;
+            --border-color: #ccc;
+            --link-color: #0056b3;
+        }
+
+        /* متغيرات الألوان للوضع الليلي (Dark Mode) */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --chat-container-bg: #1e1e1e;
+            --chat-box-bg: #2c2c2c;
+            --text-color: #e0e0e0;
+            --header-color: #FFC72C; /* ذهبي MUST للعناوين في الظلام */
+            --bot-msg-bg: #383838;
+            --bot-msg-text: #e0e0e0;
+            --user-msg-bg: #004080; /* أزرق أفتح قليلاً ليتناسب مع الظلام */
+            --user-msg-text: #ffffff;
+            --btn-bg: #FFC72C;
+            --btn-text: #000000;
+            --btn-hover: #e6b422;
+            --border-color: #444;
+            --link-color: #66b2ff;
+        }
+
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            margin: 0; 
+            padding: 20px; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        #top-bar {
+            max-width: 500px;
+            margin: 0 auto 10px auto;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        #theme-toggle {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        #theme-toggle:hover {
+            background-color: var(--border-color);
+        }
+
+        #chat-container { 
+            max-width: 500px; 
+            margin: auto; 
+            background: var(--chat-container-bg); 
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+            padding: 20px; 
+            transition: background-color 0.3s;
+        }
+
+        h3 {
+            text-align: center; 
+            color: var(--header-color);
+            margin-top: 0;
+        }
+
+        #chat-box { 
+            height: 400px; 
+            overflow-y: auto; 
+            border: 1px solid var(--border-color); 
+            padding: 10px; 
+            border-radius: 5px; 
+            margin-bottom: 10px; 
+            background-color: var(--chat-box-bg); 
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .message { 
+            margin: 10px 0; 
+            padding: 10px; 
+            border-radius: 5px; 
+            width: fit-content; 
+            max-width: 80%; 
+            line-height: 1.6; 
+            word-wrap: break-word; 
+        }
+
+        .user-msg { 
+            background-color: var(--user-msg-bg); 
+            color: var(--user-msg-text); 
+            margin-right: auto; 
+            border-bottom-right-radius: 0; 
+        }
+
+        .bot-msg { 
+            background-color: var(--bot-msg-bg); 
+            color: var(--bot-msg-text); 
+            margin-left: auto; 
+            border-bottom-left-radius: 0; 
+        }
+
+        .message a { 
+            color: var(--link-color); 
+            text-decoration: underline; 
+            font-weight: bold; 
+        }
+
+        .message a:hover { 
+            opacity: 0.8; 
+        }
+
+        #input-container { 
+            display: flex; 
+            gap: 10px; 
+        }
+
+        input[type="text"] { 
+            flex: 1; 
+            padding: 10px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 5px; 
+            background-color: var(--chat-container-bg);
+            color: var(--text-color);
+        }
+
+        input[type="text"]::placeholder {
+            color: #888;
+        }
+
+        button.send-btn { 
+            padding: 10px 20px; 
+            background-color: var(--btn-bg); 
+            color: var(--btn-text); 
+            font-weight: bold;
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background-color 0.3s;
+        }
+
+        button.send-btn:hover { 
+            background-color: var(--btn-hover); 
+        }
+    </style>
+</head>
+<body>
+
+<div id="top-bar">
+    <button id="theme-toggle" onclick="toggleTheme()">🌙 وضع ليلي</button>
+</div>
+
+<div id="chat-container">
+    <h3>نيوتن - مساعد الفيزياء (PHYS.101)</h3>
+    <div id="chat-box">
+        <div class="message bot-msg">أهلاً بك يا دكتور! أنا نيوتن، المساعد الآلي لمادة الفيزياء. أقدر أساعدك بإيه النهارده؟ <br><br> Hello Doctor! I'm Newton, your Physics AI Assistant. How can I help you today?</div>
+    </div>
+    <div id="input-container">
+        <input type="text" id="user-input" placeholder="اكتب سؤالك هنا / Type your question here..." onkeypress="handleKeyPress(event)">
+        <button class="send-btn" onclick="sendMessage()">إرسال / Send</button>
+    </div>
+</div>
+
+<script>
+    // ضع هنا الرابط (URL) الخاص بـ Google Apps Script الذي نسخته بعد عمل Deploy
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxX8lJjVAdSILnzIXjOXfMr0LE_jOHUxf6pUj6iCrEK1W7TLopm0U59EGGPztzAOkqzBQ/exec';
+
+    // --- نظام الوضع الليلي والنهاري ---
+    function toggleTheme() {
+        const htmlElement = document.documentElement;
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        
+        if (currentTheme === 'light') {
+            htmlElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            themeToggleBtn.innerText = '☀️ وضع نهاري';
+        } else {
+            htmlElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            themeToggleBtn.innerText = '🌙 وضع ليلي';
+        }
+    }
+
+    // استرجاع الوضع المفضل للطالب عند فتح الصفحة
+    window.onload = function() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        themeToggleBtn.innerText = savedTheme === 'dark' ? '☀️ وضع نهاري' : '🌙 وضع ليلي';
+    };
+    // ----------------------------------
+
+    function formatText(text) {
+        if (!text) return "";
+        let formatted = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+        formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); 
+        formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>'); 
+        formatted = formatted.replace(/\n/g, '<br>'); 
+        return formatted;
+    }
+
+    async function sendMessage() {
+        const inputField = document.getElementById("user-input");
+        const message = inputField.value.trim();
+        if (!message) return;
+
+        appendMessage("user-msg", message, false);
+        inputField.value = "";
+        
+        appendMessage("bot-msg", "نيوتن بيفكر... / Newton is thinking...", false, true);
+
+        try {
+            const response = await fetch(APPS_SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify({ message: message })
+            });
+            const data = await response.json();
+            
+            const chatBox = document.getElementById("chat-box");
+            chatBox.removeChild(chatBox.lastChild);
+            
+            appendMessage("bot-msg", data.reply, true);
+
+        } catch (error) {
+            const chatBox = document.getElementById("chat-box");
+            chatBox.removeChild(chatBox.lastChild);
+            appendMessage("bot-msg", "حدث خطأ في الاتصال، يرجى المحاولة لاحقاً. / Connection error, please try again.", false);
+        }
+    }
+
+    function appendMessage(className, text, isMarkdown = false, isTemp = false) {
+        const chatBox = document.getElementById("chat-box");
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `message ${className}`;
+        
+        if (isTemp) {
+            msgDiv.id = "temp-msg";
+        }
+
+        if (isMarkdown) {
+            msgDiv.innerHTML = formatText(text); 
+        } else {
+            msgDiv.textContent = text;
+        }
+        
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    }
+</script>
+
+</body>
+</html>
