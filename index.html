@@ -65,7 +65,20 @@
         #theme-toggle:hover { background-color: var(--border-color); }
         
         #chat-container { max-width: 500px; margin: auto; background: var(--chat-container-bg); border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); padding: 20px; transition: background-color 0.3s; }
-        h3 { text-align: center; color: var(--header-color); margin-top: 0; }
+        
+        h3 { text-align: center; color: var(--header-color); margin-top: 0; margin-bottom: 5px; }
+        
+        /* تنسيق العنوان الفرعي التوضيحي */
+        .bot-subtitle {
+            text-align: center;
+            color: var(--text-color);
+            font-size: 13px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
         #chat-box { height: 400px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 5px; margin-bottom: 10px; background-color: var(--chat-box-bg); transition: background-color 0.3s, border-color 0.3s; scroll-behavior: smooth; }
         
         .message { margin: 10px 0; padding: 10px; border-radius: 5px; width: fit-content; max-width: 80%; line-height: 1.6; word-wrap: break-word; }
@@ -91,7 +104,6 @@
         .suggestion-chip:hover { background-color: var(--chip-hover-bg); color: var(--chip-hover-text); }
         
         #input-container { display: flex; gap: 10px; align-items: center; }
-        /* إضافة dir="auto" يتم من الـ HTML مباشرة لمربع الإدخال */
         input[type="text"] { flex: 1; padding: 15px 10px; border: 1px solid var(--border-color); border-radius: 25px; background-color: var(--chat-container-bg); color: var(--text-color); outline: none; }
         input[type="text"]::placeholder { color: #888; }
         
@@ -112,12 +124,15 @@
 
 <div id="chat-container">
     <h3>نيوتن - مساعد الفيزياء (PHYS.101)</h3>
+    <p class="bot-subtitle">
+        مساعدك الذكي للإجابة على كل استفساراتك حول المنهج، الدرجات، والمصادر التعليمية<br>
+        <span style="font-size: 11px;">Your smart assistant for syllabus, grades, and resources</span>
+    </p>
     <div id="chat-box">
-        <!-- أضفنا dir="auto" لرسالة الترحيب الأولى -->
         <div class="message bot-msg" dir="auto">أهلاً بك يا دكتور! أنا نيوتن، المساعد الآلي لمادة الفيزياء. أقدر أساعدك بإيه النهارده؟ <br><br> Hello Doctor! I'm Newton, your Physics AI Assistant. How can I help you today?</div>
     </div>
     <div id="input-container">
-        <!-- السحر كله هنا: dir="auto" هتخلي مربع الكتابة يقلب إنجليزي لوحده -->
+        <!-- إضافة dir="auto" لضبط اتجاه الكتابة تلقائياً -->
         <input type="text" id="user-input" dir="auto" placeholder="اكتب سؤالك هنا / Type your question here..." onkeypress="handleKeyPress(event)">
         <button class="send-btn arrow-state" id="action-btn" onclick="handleButtonClick()" aria-label="إرسال">
             <svg id="btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -129,7 +144,7 @@
 
 <script>
     // ⚠️ ضع هنا الرابط (URL) الخاص بـ Google Apps Script ⚠️
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxX8lJjVAdSILnzIXjOXfMr0LE_jOHUxf6pUj6iCrEK1W7TLopm0U59EGGPztzAOkqzBQ/exec';
+    const APPS_SCRIPT_URL = 'YOUR_WEB_APP_URL_HERE';
 
     let isThinking = false;
     let abortController = null;
@@ -216,7 +231,7 @@
             
             removeTempMessage();
             
-            // فلتر ذكي لاصطياد الاقتراحات
+            // فلتر ذكي لاصطياد الاقتراحات (مرن للهمزات والتنسيقات)
             const suggestionRegex = /(?:\*|-)*\s*\[\s*[اإ]قتراح\s*:\s*(.*?)\s*\]\s*(?:\*|-)?/g;
             let suggestionsArray = [];
             
@@ -258,8 +273,8 @@
         if (isTemp) msgDiv.id = "temp-msg";
 
         const textDiv = document.createElement("div");
-        // إعطاء النص الداخلي أيضاً الاتجاه التلقائي
         textDiv.setAttribute("dir", "auto");
+        
         if (isMarkdown) {
             textDiv.innerHTML = formatText(text); 
         } else {
@@ -270,7 +285,6 @@
         if (suggestions.length > 0 && className === "bot-msg") {
             const suggestionsDiv = document.createElement("div");
             suggestionsDiv.className = "suggestions-container";
-            // تثبيت اتجاه الاقتراحات من اليمين لليسار في حال كانت بالعربي (أو auto لو تحب)
             suggestionsDiv.setAttribute("dir", "auto"); 
             
             suggestions.forEach(suggestion => {
