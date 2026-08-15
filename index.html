@@ -232,7 +232,7 @@
             removeTempMessage();
             
             // فلتر ذكي لاصطياد الاقتراحات (مرن للهمزات والتنسيقات)
-            const suggestionRegex = /(?:\*|-)*\s*\[\s*[اإ]قتراح\s*:\s*(.*?)\s*\]\s*(?:\*|-)?/g;
+            const suggestionRegex = /(?:\*|-)*\s*\[\s*[اإ]?(?:قتراح|قترح)\s*:\s*(.*?)\s*\]\s*(?:\*|-)?/g;
             let suggestionsArray = [];
             
             let cleanReply = data.reply.replace(suggestionRegex, function(match, suggestionText) {
