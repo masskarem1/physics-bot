@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نيوتن - مساعد الفيزياء MUST</title>
     <style>
-        /* تعريف متغيرات الألوان (هوية جامعة MUST) */
+        /* تعريف متغيرات الألوان */
         :root {
             --bg-color: #f4f7f6;
             --chat-container-bg: #ffffff;
@@ -97,6 +97,7 @@
             margin-bottom: 10px; 
             background-color: var(--chat-box-bg); 
             transition: background-color 0.3s, border-color 0.3s;
+            scroll-behavior: smooth;
         }
 
         .message { 
@@ -136,14 +137,14 @@
         #input-container { 
             display: flex; 
             gap: 10px; 
-            align-items: center; /* لتوسيط المربع مع الزر */
+            align-items: center; 
         }
 
         input[type="text"] { 
             flex: 1; 
             padding: 15px 10px; 
             border: 1px solid var(--border-color); 
-            border-radius: 25px; /* حواف دائرية أكثر للمربع */
+            border-radius: 25px; 
             background-color: var(--chat-container-bg);
             color: var(--text-color);
             outline: none;
@@ -153,11 +154,11 @@
             color: #888;
         }
 
-        /* --- تصميم زر الإرسال الجديد --- */
+        /* --- تصميم زر الإرسال / الإيقاف --- */
         button.send-btn { 
             width: 45px;
             height: 45px;
-            border-radius: 50%; /* شكل دائري */
+            border-radius: 50%; 
             background-color: var(--btn-bg); 
             color: var(--btn-text); 
             border: none; 
@@ -174,22 +175,25 @@
             width: 20px;
             height: 20px;
             fill: currentColor;
-            transform: rotateY(180deg); /* عكس الأيقونة لتلائم اتجاه اللغة العربية */
             transition: transform 0.3s ease;
-            margin-right: 3px; /* ضبط المركز البصري للسهم */
         }
 
-        /* أنيميشن عند التمرير (Hover) */
-        button.send-btn:hover { 
-            background-color: var(--btn-hover); 
-            transform: scale(1.05); /* تكبير طفيف للزر */
+        /* حالة السهم (الوضع الافتراضي) */
+        button.send-btn.arrow-state svg {
+            transform: rotateY(180deg); /* عكس الأيقونة للغة العربية */
+            margin-right: 3px; 
         }
 
-        button.send-btn:hover svg {
-            transform: rotateY(180deg) translateX(4px) translateY(-4px); /* حركة السهم للأمام */
+        button.send-btn.arrow-state:hover svg {
+            transform: rotateY(180deg) scale(1.1); /* تكبير السهم قليلاً فقط عند التمرير */
         }
 
-        /* أنيميشن عند الضغط (Active) */
+        /* حالة المربع (أثناء التفكير) */
+        button.send-btn.stop-state svg {
+            transform: scale(1.1);
+            margin-right: 0; 
+        }
+
         button.send-btn:active {
             transform: scale(0.95);
         }
@@ -208,9 +212,10 @@
     </div>
     <div id="input-container">
         <input type="text" id="user-input" placeholder="اكتب سؤالك هنا / Type your question here..." onkeypress="handleKeyPress(event)">
-        <button class="send-btn" onclick="sendMessage()" aria-label="إرسال">
-            <!-- أيقونة السهم (Paper Plane) -->
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <!-- الزر يبدأ بحالة السهم (arrow-state) -->
+        <button class="send-btn arrow-state" id="action-btn" onclick="handleButtonClick()" aria-label="إرسال">
+            <svg id="btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <!-- أيقونة السهم الافتراضية -->
                 <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
             </svg>
         </button>
@@ -220,6 +225,14 @@
 <script>
     // ضع هنا الرابط (URL) الخاص بـ Google Apps Script الذي نسخته بعد عمل Deploy
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxX8lJjVAdSILnzIXjOXfMr0LE_jOHUxf6pUj6iCrEK1W7TLopm0U59EGGPztzAOkqzBQ/exec';
+
+    // متغيرات التحكم في حالة الزر وإلغاء الطلب
+    let isThinking = false;
+    let abortController = null;
+
+    // أيقونات الزر (SVG)
+    const arrowIcon = '<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>';
+    const stopIcon = '<path d="M6 6h12v12H6z"/>'; // مربع الإيقاف
 
     // --- نظام الوضع الليلي والنهاري ---
     function toggleTheme() {
@@ -254,6 +267,35 @@
         return formatted;
     }
 
+    // --- منطق الزر الديناميكي (إرسال / إيقاف) ---
+    function toggleButtonState(thinking) {
+        const btn = document.getElementById('action-btn');
+        const icon = document.getElementById('btn-icon');
+        isThinking = thinking;
+
+        if (thinking) {
+            btn.classList.remove('arrow-state');
+            btn.classList.add('stop-state');
+            icon.innerHTML = stopIcon; // تحويله لمربع
+        } else {
+            btn.classList.remove('stop-state');
+            btn.classList.add('arrow-state');
+            icon.innerHTML = arrowIcon; // إرجاعه لسهم
+        }
+    }
+
+    function handleButtonClick() {
+        if (isThinking) {
+            // إذا كان الزر مربع (قيد التفكير)، قم بإلغاء الطلب
+            if (abortController) {
+                abortController.abort();
+            }
+        } else {
+            // إذا كان سهم، قم بإرسال الرسالة
+            sendMessage();
+        }
+    }
+
     async function sendMessage() {
         const inputField = document.getElementById("user-input");
         const message = inputField.value.trim();
@@ -262,24 +304,41 @@
         appendMessage("user-msg", message, false);
         inputField.value = "";
         
+        toggleButtonState(true); // تغيير الزر إلى مربع
         appendMessage("bot-msg", "نيوتن بيفكر... / Newton is thinking...", false, true);
+
+        // إعداد متحكم الإلغاء
+        abortController = new AbortController();
+        const signal = abortController.signal;
 
         try {
             const response = await fetch(APPS_SCRIPT_URL, {
                 method: "POST",
-                body: JSON.stringify({ message: message })
+                body: JSON.stringify({ message: message }),
+                signal: signal // ربط الطلب بمتحكم الإلغاء
             });
             const data = await response.json();
             
-            const chatBox = document.getElementById("chat-box");
-            chatBox.removeChild(chatBox.lastChild);
-            
+            removeTempMessage();
             appendMessage("bot-msg", data.reply, true);
 
         } catch (error) {
-            const chatBox = document.getElementById("chat-box");
-            chatBox.removeChild(chatBox.lastChild);
-            appendMessage("bot-msg", "حدث خطأ في الاتصال، يرجى المحاولة لاحقاً. / Connection error, please try again.", false);
+            removeTempMessage();
+            if (error.name === 'AbortError') {
+                appendMessage("bot-msg", "تم إيقاف التفكير. / Generation stopped.", false);
+            } else {
+                appendMessage("bot-msg", "حدث خطأ في الاتصال، يرجى المحاولة لاحقاً. / Connection error, please try again.", false);
+            }
+        } finally {
+            toggleButtonState(false); // إعادة الزر إلى سهم في كل الأحوال
+            abortController = null;
+        }
+    }
+
+    function removeTempMessage() {
+        const tempMsg = document.getElementById("temp-msg");
+        if (tempMsg) {
+            tempMsg.remove();
         }
     }
 
@@ -304,7 +363,10 @@
 
     function handleKeyPress(event) {
         if (event.key === "Enter") {
-            sendMessage();
+            // منع الإرسال المتكرر إذا كان البوت يفكر بالفعل
+            if (!isThinking) {
+                sendMessage();
+            }
         }
     }
 </script>
