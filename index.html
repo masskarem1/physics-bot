@@ -91,6 +91,7 @@
         .suggestion-chip:hover { background-color: var(--chip-hover-bg); color: var(--chip-hover-text); }
         
         #input-container { display: flex; gap: 10px; align-items: center; }
+        /* إضافة dir="auto" يتم من الـ HTML مباشرة لمربع الإدخال */
         input[type="text"] { flex: 1; padding: 15px 10px; border: 1px solid var(--border-color); border-radius: 25px; background-color: var(--chat-container-bg); color: var(--text-color); outline: none; }
         input[type="text"]::placeholder { color: #888; }
         
@@ -112,10 +113,12 @@
 <div id="chat-container">
     <h3>نيوتن - مساعد الفيزياء (PHYS.101)</h3>
     <div id="chat-box">
-        <div class="message bot-msg">أهلاً بك يا دكتور! أنا نيوتن، المساعد الآلي لمادة الفيزياء. أقدر أساعدك بإيه النهارده؟ <br><br> Hello Doctor! I'm Newton, your Physics AI Assistant. How can I help you today?</div>
+        <!-- أضفنا dir="auto" لرسالة الترحيب الأولى -->
+        <div class="message bot-msg" dir="auto">أهلاً بك يا دكتور! أنا نيوتن، المساعد الآلي لمادة الفيزياء. أقدر أساعدك بإيه النهارده؟ <br><br> Hello Doctor! I'm Newton, your Physics AI Assistant. How can I help you today?</div>
     </div>
     <div id="input-container">
-        <input type="text" id="user-input" placeholder="اكتب سؤالك هنا / Type your question here..." onkeypress="handleKeyPress(event)">
+        <!-- السحر كله هنا: dir="auto" هتخلي مربع الكتابة يقلب إنجليزي لوحده -->
+        <input type="text" id="user-input" dir="auto" placeholder="اكتب سؤالك هنا / Type your question here..." onkeypress="handleKeyPress(event)">
         <button class="send-btn arrow-state" id="action-btn" onclick="handleButtonClick()" aria-label="إرسال">
             <svg id="btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -213,7 +216,7 @@
             
             removeTempMessage();
             
-            // فلتر ذكي لاصطياد الاقتراحات (يتجاهل الهمزات والمسافات وعلامات التنسيق)
+            // فلتر ذكي لاصطياد الاقتراحات
             const suggestionRegex = /(?:\*|-)*\s*\[\s*[اإ]قتراح\s*:\s*(.*?)\s*\]\s*(?:\*|-)?/g;
             let suggestionsArray = [];
             
@@ -249,9 +252,14 @@
         const msgDiv = document.createElement("div");
         msgDiv.className = `message ${className}`;
         
+        // إعطاء كل رسالة خاصية الاتجاه التلقائي لضبط المحاذاة حسب اللغة
+        msgDiv.setAttribute("dir", "auto");
+        
         if (isTemp) msgDiv.id = "temp-msg";
 
         const textDiv = document.createElement("div");
+        // إعطاء النص الداخلي أيضاً الاتجاه التلقائي
+        textDiv.setAttribute("dir", "auto");
         if (isMarkdown) {
             textDiv.innerHTML = formatText(text); 
         } else {
@@ -262,10 +270,13 @@
         if (suggestions.length > 0 && className === "bot-msg") {
             const suggestionsDiv = document.createElement("div");
             suggestionsDiv.className = "suggestions-container";
+            // تثبيت اتجاه الاقتراحات من اليمين لليسار في حال كانت بالعربي (أو auto لو تحب)
+            suggestionsDiv.setAttribute("dir", "auto"); 
             
             suggestions.forEach(suggestion => {
                 const btn = document.createElement("button");
                 btn.className = "suggestion-chip";
+                btn.setAttribute("dir", "auto");
                 btn.textContent = suggestion;
                 btn.onclick = () => sendMessage(suggestion);
                 suggestionsDiv.appendChild(btn);
