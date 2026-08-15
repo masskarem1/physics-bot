@@ -11,12 +11,12 @@
             --chat-container-bg: #ffffff;
             --chat-box-bg: #fafafa;
             --text-color: #333333;
-            --header-color: #003366; /* أزرق MUST الداكن */
+            --header-color: #003366; 
             --bot-msg-bg: #e9ecef;
             --bot-msg-text: #333333;
-            --user-msg-bg: #003366; /* أزرق MUST للرسائل */
+            --user-msg-bg: #003366; 
             --user-msg-text: #ffffff;
-            --btn-bg: #FFC72C; /* ذهبي MUST */
+            --btn-bg: #FFC72C; 
             --btn-text: #003366;
             --btn-hover: #e6b422;
             --border-color: #ccc;
@@ -29,10 +29,10 @@
             --chat-container-bg: #1e1e1e;
             --chat-box-bg: #2c2c2c;
             --text-color: #e0e0e0;
-            --header-color: #FFC72C; /* ذهبي MUST للعناوين في الظلام */
+            --header-color: #FFC72C; 
             --bot-msg-bg: #383838;
             --bot-msg-text: #e0e0e0;
-            --user-msg-bg: #004080; /* أزرق أفتح قليلاً ليتناسب مع الظلام */
+            --user-msg-bg: #004080; 
             --user-msg-text: #ffffff;
             --btn-bg: #FFC72C;
             --btn-text: #000000;
@@ -136,34 +136,62 @@
         #input-container { 
             display: flex; 
             gap: 10px; 
+            align-items: center; /* لتوسيط المربع مع الزر */
         }
 
         input[type="text"] { 
             flex: 1; 
-            padding: 10px; 
+            padding: 15px 10px; 
             border: 1px solid var(--border-color); 
-            border-radius: 5px; 
+            border-radius: 25px; /* حواف دائرية أكثر للمربع */
             background-color: var(--chat-container-bg);
             color: var(--text-color);
+            outline: none;
         }
 
         input[type="text"]::placeholder {
             color: #888;
         }
 
+        /* --- تصميم زر الإرسال الجديد --- */
         button.send-btn { 
-            padding: 10px 20px; 
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* شكل دائري */
             background-color: var(--btn-bg); 
             color: var(--btn-text); 
-            font-weight: bold;
             border: none; 
-            border-radius: 5px; 
             cursor: pointer; 
-            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.2s ease;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
+        button.send-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            transform: rotateY(180deg); /* عكس الأيقونة لتلائم اتجاه اللغة العربية */
+            transition: transform 0.3s ease;
+            margin-right: 3px; /* ضبط المركز البصري للسهم */
+        }
+
+        /* أنيميشن عند التمرير (Hover) */
         button.send-btn:hover { 
             background-color: var(--btn-hover); 
+            transform: scale(1.05); /* تكبير طفيف للزر */
+        }
+
+        button.send-btn:hover svg {
+            transform: rotateY(180deg) translateX(4px) translateY(-4px); /* حركة السهم للأمام */
+        }
+
+        /* أنيميشن عند الضغط (Active) */
+        button.send-btn:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
@@ -180,13 +208,18 @@
     </div>
     <div id="input-container">
         <input type="text" id="user-input" placeholder="اكتب سؤالك هنا / Type your question here..." onkeypress="handleKeyPress(event)">
-        <button class="send-btn" onclick="sendMessage()">إرسال / Send</button>
+        <button class="send-btn" onclick="sendMessage()" aria-label="إرسال">
+            <!-- أيقونة السهم (Paper Plane) -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+        </button>
     </div>
 </div>
 
 <script>
     // ضع هنا الرابط (URL) الخاص بـ Google Apps Script الذي نسخته بعد عمل Deploy
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxX8lJjVAdSILnzIXjOXfMr0LE_jOHUxf6pUj6iCrEK1W7TLopm0U59EGGPztzAOkqzBQ/exec';
+    const APPS_SCRIPT_URL = 'YOUR_WEB_APP_URL_HERE';
 
     // --- نظام الوضع الليلي والنهاري ---
     function toggleTheme() {
@@ -205,14 +238,12 @@
         }
     }
 
-    // استرجاع الوضع المفضل للطالب عند فتح الصفحة
     window.onload = function() {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         const themeToggleBtn = document.getElementById('theme-toggle');
         themeToggleBtn.innerText = savedTheme === 'dark' ? '☀️ وضع نهاري' : '🌙 وضع ليلي';
     };
-    // ----------------------------------
 
     function formatText(text) {
         if (!text) return "";
