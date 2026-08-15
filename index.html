@@ -21,9 +21,13 @@
             --btn-hover: #e6b422;
             --border-color: #ccc;
             --link-color: #0056b3;
+            --chip-bg: #ffffff;
+            --chip-border: #0056b3;
+            --chip-text: #0056b3;
+            --chip-hover-bg: #0056b3;
+            --chip-hover-text: #ffffff;
         }
 
-        /* متغيرات الألوان للوضع الليلي (Dark Mode) */
         [data-theme="dark"] {
             --bg-color: #121212;
             --chat-container-bg: #1e1e1e;
@@ -39,164 +43,54 @@
             --btn-hover: #e6b422;
             --border-color: #444;
             --link-color: #66b2ff;
+            --chip-bg: #2c2c2c;
+            --chip-border: #66b2ff;
+            --chip-text: #66b2ff;
+            --chip-hover-bg: #66b2ff;
+            --chip-hover-text: #000000;
         }
 
-        body { 
-            font-family: Arial, sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-color);
-            margin: 0; 
-            padding: 20px; 
-            transition: background-color 0.3s, color 0.3s;
-        }
+        body { font-family: Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; transition: background-color 0.3s, color 0.3s; }
         
-        #top-bar {
-            max-width: 500px;
-            margin: 0 auto 10px auto;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        #theme-toggle {
-            background-color: transparent;
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 5px 10px;
-            border-radius: 20px;
+        #top-bar { max-width: 500px; margin: 0 auto 10px auto; display: flex; justify-content: flex-end; }
+        #theme-toggle { background-color: transparent; color: var(--text-color); border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+        #theme-toggle:hover { background-color: var(--border-color); }
+        
+        #chat-container { max-width: 500px; margin: auto; background: var(--chat-container-bg); border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); padding: 20px; transition: background-color 0.3s; }
+        h3 { text-align: center; color: var(--header-color); margin-top: 0; }
+        #chat-box { height: 400px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 5px; margin-bottom: 10px; background-color: var(--chat-box-bg); transition: background-color 0.3s, border-color 0.3s; scroll-behavior: smooth; }
+        
+        .message { margin: 10px 0; padding: 10px; border-radius: 5px; width: fit-content; max-width: 80%; line-height: 1.6; word-wrap: break-word; }
+        .user-msg { background-color: var(--user-msg-bg); color: var(--user-msg-text); margin-right: auto; border-bottom-right-radius: 0; }
+        .bot-msg { background-color: var(--bot-msg-bg); color: var(--bot-msg-text); margin-left: auto; border-bottom-left-radius: 0; }
+        .message a { color: var(--link-color); text-decoration: underline; font-weight: bold; }
+        
+        /* تنسيق أزرار الاقتراحات (Chips) */
+        .suggestions-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .suggestion-chip {
+            background-color: var(--chip-bg);
+            color: var(--chip-text);
+            border: 1px solid var(--chip-border);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 13px;
             cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
+            text-align: right;
+            font-family: inherit;
         }
-
-        #theme-toggle:hover {
-            background-color: var(--border-color);
-        }
-
-        #chat-container { 
-            max-width: 500px; 
-            margin: auto; 
-            background: var(--chat-container-bg); 
-            border-radius: 10px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
-            padding: 20px; 
-            transition: background-color 0.3s;
-        }
-
-        h3 {
-            text-align: center; 
-            color: var(--header-color);
-            margin-top: 0;
-        }
-
-        #chat-box { 
-            height: 400px; 
-            overflow-y: auto; 
-            border: 1px solid var(--border-color); 
-            padding: 10px; 
-            border-radius: 5px; 
-            margin-bottom: 10px; 
-            background-color: var(--chat-box-bg); 
-            transition: background-color 0.3s, border-color 0.3s;
-            scroll-behavior: smooth;
-        }
-
-        .message { 
-            margin: 10px 0; 
-            padding: 10px; 
-            border-radius: 5px; 
-            width: fit-content; 
-            max-width: 80%; 
-            line-height: 1.6; 
-            word-wrap: break-word; 
-        }
-
-        .user-msg { 
-            background-color: var(--user-msg-bg); 
-            color: var(--user-msg-text); 
-            margin-right: auto; 
-            border-bottom-right-radius: 0; 
-        }
-
-        .bot-msg { 
-            background-color: var(--bot-msg-bg); 
-            color: var(--bot-msg-text); 
-            margin-left: auto; 
-            border-bottom-left-radius: 0; 
-        }
-
-        .message a { 
-            color: var(--link-color); 
-            text-decoration: underline; 
-            font-weight: bold; 
-        }
-
-        .message a:hover { 
-            opacity: 0.8; 
-        }
-
-        #input-container { 
-            display: flex; 
-            gap: 10px; 
-            align-items: center; 
-        }
-
-        input[type="text"] { 
-            flex: 1; 
-            padding: 15px 10px; 
-            border: 1px solid var(--border-color); 
-            border-radius: 25px; 
-            background-color: var(--chat-container-bg);
-            color: var(--text-color);
-            outline: none;
-        }
-
-        input[type="text"]::placeholder {
-            color: #888;
-        }
-
-        /* --- تصميم زر الإرسال / الإيقاف --- */
-        button.send-btn { 
-            width: 45px;
-            height: 45px;
-            border-radius: 50%; 
-            background-color: var(--btn-bg); 
-            color: var(--btn-text); 
-            border: none; 
-            cursor: pointer; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s, transform 0.2s ease;
-            flex-shrink: 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        button.send-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-            transition: transform 0.3s ease;
-        }
-
-        /* حالة السهم (الوضع الافتراضي) */
-        button.send-btn.arrow-state svg {
-            transform: rotateY(180deg); /* عكس الأيقونة للغة العربية */
-            margin-right: 3px; 
-        }
-
-        button.send-btn.arrow-state:hover svg {
-            transform: rotateY(180deg) scale(1.1); /* تكبير السهم قليلاً فقط عند التمرير */
-        }
-
-        /* حالة المربع (أثناء التفكير) */
-        button.send-btn.stop-state svg {
-            transform: scale(1.1);
-            margin-right: 0; 
-        }
-
-        button.send-btn:active {
-            transform: scale(0.95);
-        }
+        .suggestion-chip:hover { background-color: var(--chip-hover-bg); color: var(--chip-hover-text); }
+        
+        #input-container { display: flex; gap: 10px; align-items: center; }
+        input[type="text"] { flex: 1; padding: 15px 10px; border: 1px solid var(--border-color); border-radius: 25px; background-color: var(--chat-container-bg); color: var(--text-color); outline: none; }
+        input[type="text"]::placeholder { color: #888; }
+        
+        button.send-btn { width: 45px; height: 45px; border-radius: 50%; background-color: var(--btn-bg); color: var(--btn-text); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s, transform 0.2s ease; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        button.send-btn svg { width: 20px; height: 20px; fill: currentColor; transition: transform 0.3s ease; }
+        button.send-btn.arrow-state svg { transform: rotateY(180deg); margin-right: 3px; }
+        button.send-btn.arrow-state:hover svg { transform: rotateY(180deg) scale(1.1); }
+        button.send-btn.stop-state svg { transform: scale(1.1); margin-right: 0; }
+        button.send-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -208,14 +102,12 @@
 <div id="chat-container">
     <h3>نيوتن - مساعد الفيزياء (PHYS.101)</h3>
     <div id="chat-box">
-        <div class="message bot-msg">أهلاً بك يا دكتور! أنا نيوتن، المساعد الآلي لمادة الفيزياء. أقدر أساعدك بإيه النهارده؟ <br><br> Hello Doctor! I'm Newton, your Physics AI Assistant. How can I help you today?</div>
+        <div class="message bot-msg">أهلاً بك يا دكتور! أنا نيوتن، المساعد الآلي لمادة الفيزياء. أقدر أساعدك بإيه النهارده؟</div>
     </div>
     <div id="input-container">
-        <input type="text" id="user-input" placeholder="اكتب سؤالك هنا / Type your question here..." onkeypress="handleKeyPress(event)">
-        <!-- الزر يبدأ بحالة السهم (arrow-state) -->
+        <input type="text" id="user-input" placeholder="اكتب سؤالك هنا..." onkeypress="handleKeyPress(event)">
         <button class="send-btn arrow-state" id="action-btn" onclick="handleButtonClick()" aria-label="إرسال">
             <svg id="btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <!-- أيقونة السهم الافتراضية -->
                 <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
             </svg>
         </button>
@@ -226,20 +118,15 @@
     // ضع هنا الرابط (URL) الخاص بـ Google Apps Script الذي نسخته بعد عمل Deploy
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxX8lJjVAdSILnzIXjOXfMr0LE_jOHUxf6pUj6iCrEK1W7TLopm0U59EGGPztzAOkqzBQ/exec';
 
-    // متغيرات التحكم في حالة الزر وإلغاء الطلب
     let isThinking = false;
     let abortController = null;
-
-    // أيقونات الزر (SVG)
     const arrowIcon = '<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>';
-    const stopIcon = '<path d="M6 6h12v12H6z"/>'; // مربع الإيقاف
+    const stopIcon = '<path d="M6 6h12v12H6z"/>';
 
-    // --- نظام الوضع الليلي والنهاري ---
     function toggleTheme() {
         const htmlElement = document.documentElement;
         const themeToggleBtn = document.getElementById('theme-toggle');
         const currentTheme = htmlElement.getAttribute('data-theme');
-        
         if (currentTheme === 'light') {
             htmlElement.setAttribute('data-theme', 'dark');
             localStorage.setItem('theme', 'dark');
@@ -254,8 +141,7 @@
     window.onload = function() {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        themeToggleBtn.innerText = savedTheme === 'dark' ? '☀️ وضع نهاري' : '🌙 وضع ليلي';
+        document.getElementById('theme-toggle').innerText = savedTheme === 'dark' ? '☀️ وضع نهاري' : '🌙 وضع ليلي';
     };
 
     function formatText(text) {
@@ -267,47 +153,37 @@
         return formatted;
     }
 
-    // --- منطق الزر الديناميكي (إرسال / إيقاف) ---
     function toggleButtonState(thinking) {
         const btn = document.getElementById('action-btn');
         const icon = document.getElementById('btn-icon');
         isThinking = thinking;
-
         if (thinking) {
-            btn.classList.remove('arrow-state');
-            btn.classList.add('stop-state');
-            icon.innerHTML = stopIcon; // تحويله لمربع
+            btn.classList.remove('arrow-state'); btn.classList.add('stop-state');
+            icon.innerHTML = stopIcon;
         } else {
-            btn.classList.remove('stop-state');
-            btn.classList.add('arrow-state');
-            icon.innerHTML = arrowIcon; // إرجاعه لسهم
+            btn.classList.remove('stop-state'); btn.classList.add('arrow-state');
+            icon.innerHTML = arrowIcon;
         }
     }
 
     function handleButtonClick() {
-        if (isThinking) {
-            // إذا كان الزر مربع (قيد التفكير)، قم بإلغاء الطلب
-            if (abortController) {
-                abortController.abort();
-            }
-        } else {
-            // إذا كان سهم، قم بإرسال الرسالة
-            sendMessage();
-        }
+        if (isThinking) { if (abortController) abortController.abort(); } 
+        else { sendMessage(); }
     }
 
-    async function sendMessage() {
+    // تعديل الدالة لتستقبل النص المقترح عند الضغط على الزر
+    async function sendMessage(suggestedMessage = null) {
         const inputField = document.getElementById("user-input");
-        const message = inputField.value.trim();
+        const message = suggestedMessage || inputField.value.trim();
+        
         if (!message) return;
 
         appendMessage("user-msg", message, false);
-        inputField.value = "";
+        if (!suggestedMessage) inputField.value = ""; // تفريغ المربع فقط إذا كان الإدخال يدوياً
         
-        toggleButtonState(true); // تغيير الزر إلى مربع
+        toggleButtonState(true);
         appendMessage("bot-msg", "نيوتن بيفكر... / Newton is thinking...", false, true);
 
-        // إعداد متحكم الإلغاء
         abortController = new AbortController();
         const signal = abortController.signal;
 
@@ -315,46 +191,71 @@
             const response = await fetch(APPS_SCRIPT_URL, {
                 method: "POST",
                 body: JSON.stringify({ message: message }),
-                signal: signal // ربط الطلب بمتحكم الإلغاء
+                signal: signal
             });
             const data = await response.json();
             
             removeTempMessage();
-            appendMessage("bot-msg", data.reply, true);
+            
+            // --- فلترة واستخراج الاقتراحات من الإجابة ---
+            const suggestionRegex = /\[اقتراح:\s*(.*?)\]/g;
+            let suggestionsArray = [];
+            let cleanReply = data.reply.replace(suggestionRegex, function(match, suggestionText) {
+                suggestionsArray.push(suggestionText.trim());
+                return ''; // إزالة جملة الاقتراح من النص الأساسي
+            }).trim();
+
+            appendMessage("bot-msg", cleanReply, true, false, suggestionsArray);
 
         } catch (error) {
             removeTempMessage();
             if (error.name === 'AbortError') {
-                appendMessage("bot-msg", "تم إيقاف التفكير. / Generation stopped.", false);
+                appendMessage("bot-msg", "تم إيقاف التفكير.", false);
             } else {
-                appendMessage("bot-msg", "حدث خطأ في الاتصال، يرجى المحاولة لاحقاً. / Connection error, please try again.", false);
+                appendMessage("bot-msg", "حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.", false);
             }
         } finally {
-            toggleButtonState(false); // إعادة الزر إلى سهم في كل الأحوال
+            toggleButtonState(false);
             abortController = null;
         }
     }
 
     function removeTempMessage() {
         const tempMsg = document.getElementById("temp-msg");
-        if (tempMsg) {
-            tempMsg.remove();
-        }
+        if (tempMsg) tempMsg.remove();
     }
 
-    function appendMessage(className, text, isMarkdown = false, isTemp = false) {
+    // تعديل دالة الطباعة لإنشاء أزرار الاقتراحات إن وجدت
+    function appendMessage(className, text, isMarkdown = false, isTemp = false, suggestions = []) {
         const chatBox = document.getElementById("chat-box");
         const msgDiv = document.createElement("div");
         msgDiv.className = `message ${className}`;
         
-        if (isTemp) {
-            msgDiv.id = "temp-msg";
-        }
+        if (isTemp) msgDiv.id = "temp-msg";
 
+        // حاوية النص الأساسي
+        const textDiv = document.createElement("div");
         if (isMarkdown) {
-            msgDiv.innerHTML = formatText(text); 
+            textDiv.innerHTML = formatText(text); 
         } else {
-            msgDiv.textContent = text;
+            textDiv.textContent = text;
+        }
+        msgDiv.appendChild(textDiv);
+
+        // إنشاء أزرار الاقتراحات (Chips)
+        if (suggestions.length > 0 && className === "bot-msg") {
+            const suggestionsDiv = document.createElement("div");
+            suggestionsDiv.className = "suggestions-container";
+            
+            suggestions.forEach(suggestion => {
+                const btn = document.createElement("button");
+                btn.className = "suggestion-chip";
+                btn.textContent = suggestion;
+                // عند الضغط على الزر، يرسل الاقتراح كسؤال جديد
+                btn.onclick = () => sendMessage(suggestion);
+                suggestionsDiv.appendChild(btn);
+            });
+            msgDiv.appendChild(suggestionsDiv);
         }
         
         chatBox.appendChild(msgDiv);
@@ -362,11 +263,8 @@
     }
 
     function handleKeyPress(event) {
-        if (event.key === "Enter") {
-            // منع الإرسال المتكرر إذا كان البوت يفكر بالفعل
-            if (!isThinking) {
-                sendMessage();
-            }
+        if (event.key === "Enter" && !isThinking) {
+            sendMessage();
         }
     }
 </script>
