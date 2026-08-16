@@ -81,7 +81,8 @@
 
         #chat-box { height: 400px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 5px; margin-bottom: 10px; background-color: var(--chat-box-bg); transition: background-color 0.3s, border-color 0.3s; scroll-behavior: smooth; }
         
-        .message { margin: 10px 0; padding: 10px; border-radius: 5px; width: fit-content; max-width: 80%; line-height: 1.6; word-wrap: break-word; }
+        /* إضافة text-align: start لضمان محاذاة اللغة الإنجليزية لليسار */
+        .message { margin: 10px 0; padding: 10px; border-radius: 5px; width: fit-content; max-width: 80%; line-height: 1.6; word-wrap: break-word; text-align: start; }
         .user-msg { background-color: var(--user-msg-bg); color: var(--user-msg-text); margin-right: auto; border-bottom-right-radius: 0; }
         .bot-msg { background-color: var(--bot-msg-bg); color: var(--bot-msg-text); margin-left: auto; border-bottom-left-radius: 0; }
         .message a { color: var(--link-color); text-decoration: underline; font-weight: bold; }
@@ -98,7 +99,7 @@
             font-size: 13px;
             cursor: pointer;
             transition: all 0.2s ease;
-            text-align: right;
+            text-align: start; /* محاذاة تلقائية للنص داخل الأزرار */
             font-family: inherit;
         }
         .suggestion-chip:hover { background-color: var(--chip-hover-bg); color: var(--chip-hover-text); }
@@ -231,7 +232,7 @@
             
             removeTempMessage();
             
-            // فلتر ذكي لاصطياد الاقتراحات (مرن للهمزات والتنسيقات)
+            // فلتر الاقتراحات الذكي المعدل ليشمل "اقتراح" و "اقترح" مع التنسيقات
             const suggestionRegex = /(?:\*|-)*\s*\[\s*[اإ]?(?:قتراح|قترح)\s*:\s*(.*?)\s*\]\s*(?:\*|-)?/g;
             let suggestionsArray = [];
             
